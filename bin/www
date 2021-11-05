@@ -1,0 +1,5 @@
+let app = require('../app');
+
+app.app.listen(8080, () => {
+  console.log("servidor en puerto 8080")
+});
