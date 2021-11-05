@@ -17,8 +17,8 @@ router.get('/', function(req, res) {
 
 router.get('/:usuario/:apellido/:password', function(req, res) {
   usuario.consultar(req, res)
-    .then(prom => {
-      console.log(prom ? 'sirvio' : 'nosirvio')
+    .then(consulta => {
+      res.send(consulta ? 'Tu usuario es: '+consulta : 'El usuario no existe')
     })
     .catch(err => {
       console.log(err)
@@ -27,10 +27,10 @@ router.get('/:usuario/:apellido/:password', function(req, res) {
 });
 
 /* Rutas POST */
-router.post('/:nombre/:apellido/:password', function(req, res) {
+router.post('/agregar/:usuario/:apellido/:password', function(req, res) {
   usuario.crear(req, res)
     .then(guardado => {
-      res.send('se ha guardado: '+guardado)
+      res.send('Se ha guardado: '+guardado)
     })
     .catch(err => {
       console.log(err)
@@ -38,11 +38,34 @@ router.post('/:nombre/:apellido/:password', function(req, res) {
     })
 });
 
-router.post('/:usuario/:password/agregar/equipo/:area/:nombre/:descripcion', function(req, res, next) {
+router.post('/agregar/:usuario/:apellido/:password/equipo/:area/:nombre/:descripcion', function(req, res, next) {
   equipo.agregar(req, res)
     .then(guardado => {
-      res.send('se ha guardado: '+guardado)
+      console.log('asdasdasdasd'+guardado)
+      res.send(guardado ? 'Se ha guardado: '+guardado : 'El usuario no existe, por lo que no se guardo el equipo')
+    })
+    .catch(err => {
+      console.log(err)
       res.end()
+    })
+});
+
+/* Rutas PUT */
+router.put('/editar/:usuario/:apellido/:password', function(req, res) {
+  usuario.actualizar(req, res)
+    .then(cambio => {
+      res.send('Se ha guardado: '+cambio)
+    })
+    .catch(err => {
+      console.log(err)
+      res.end()
+    })
+});
+
+router.put('/editar/:usuario/:apellido/:password/equipo/:area/:nombre/:descripcion', function(req, res) {
+  equipo.editar(req, res)
+    .then(cambio => {
+      res.send('Se ha guardado: '+cambio)
     })
     .catch(err => {
       console.log(err)
