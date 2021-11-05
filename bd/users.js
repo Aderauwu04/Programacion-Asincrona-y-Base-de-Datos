@@ -6,7 +6,7 @@ class user{
   constructor(req, res){}
   async crear(req, res){
     this.newUser= new userEstructura({
-      nombre: req.params.nombre,
+      usuario: req.params.usuario,
       apellido: req.params.apellido,
       password: req.params.password
     })
@@ -14,21 +14,18 @@ class user{
     return guardado
   }
   async consultar(req, res){
-    const prom = new Promise(async (resolve, reject) => {
-      let consulta = await usuarios.find({
-        nombre: req.params.nombre,
-        apellido: req.params.apellido,
-        password: req.params.password
-      })
-      if (!consulta.length){
-        console.log('nosirve'+consulta)
-        resolve(false)
-      }else {
-        resolve(true)
-        console.log(consulta)
-      }
+    let consulta = await usuarios.find({
+      usuario: req.params.usuario,
+      apellido: req.params.apellido,
+      password: req.params.password
     })
-    return prom
+    if(!consulta.length){
+      consulta = false
+      console.log('No existe el usuario')
+    }else {
+      console.log(consulta)
+    }
+    return consulta
   }
 }
 

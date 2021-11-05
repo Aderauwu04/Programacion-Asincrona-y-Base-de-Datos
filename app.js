@@ -11,7 +11,7 @@ mongoose.connect('mongodb://localhost:27017/Almacenbd', {
 });
 
 mongoose.connection.on('open', _ => {
-    console.log('conectado a la base de datos del almacen')
+    console.log('conectado a la base de datos del almacen, Almacenbd')
 })
 
 // view engine setup

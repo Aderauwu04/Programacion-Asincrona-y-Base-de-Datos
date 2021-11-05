@@ -7,30 +7,25 @@ class equipo extends user{
   constructor(req, res){
     super(req, res)
   }
-  async sinUsuario(req, res){
-    this.sesion = await usuarios.find({
-      nombre: req.params.nombre,
-      apellido: req.params.apellido
-    })
-    console.log(this.sesion)
-    if(this.sesion !== []) {
-      return this.sesion
-    }
-  }
   async agregar(req, res) {
-    this.sinUsuario(req, res)
-    if(this.sesion) {
-      this.area = new almacenEstructura({
-        area: req.params.area,
-        usuario: req.params.usuario,
-        nombre: req.params.nombre,
-        descripcion: req.params.descripcion
+    return this.guardado =
+    this.consultar(req, res)
+    .then(async consulta => {
+      let guardado;
+        if(!consulta.length) {
+          guardado = false
+        }else {
+          this.equipo = new almacenEstructura({
+            area: req.params.area,
+            usuario: req.params.usuario,
+            nombre: req.params.nombre,
+            descripcion: req.params.descripcion
+          })
+          guardado = await this.equipo.save()
+          console.log(guardado)
+        }
+        return guardado
       })
-      const guardado = await this.area.save()
-      return guardado
-    }else {
-      res.write('no has iniciado sesion')
-    }
   }
 }
 
