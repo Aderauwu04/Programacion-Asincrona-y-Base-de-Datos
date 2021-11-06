@@ -3,7 +3,6 @@ const userEstructura = require('./modelos/userEstructura')
 
 class user{
   constructor(req, res){}
-
   //crear usuario
   async crear(req, res){
     this.newUser = new userEstructura({
@@ -14,15 +13,17 @@ class user{
     const guardado = await this.newUser.save()
     return guardado
   }
-
   // consultar uno o todos los usuarios
   async consultar(req, res, all){
     switch (all) {
-      case true:
-        this.consulta = await userEstructura.find()
+      case true: this.consulta = await userEstructura.find()
         break;
 
-      default: this.consulta = await userEstructura.find({usuario: req.params.usuario})
+      default: this.consulta = await userEstructura.find({
+        usuario: req.params.usuario,
+        apellido: req.params.apellido,
+        password: req.params.password
+      })
       break;
     }
     if(!this.consulta.length){
@@ -33,7 +34,6 @@ class user{
     }
     return this.consulta
   }
-
   //actualizar un usuario
   async actualizar(req, res){
     return this.cambio = this.consultar(req, res)
@@ -63,6 +63,27 @@ class user{
       .catch(err => {
         console.log(err)
         res.end()
+      })
+  }
+  //eliminar uno a todos los usuarios
+  async eliminar(req, res, all){
+    return this.consultar(req, res)
+      .then(async consulta => {
+        if(!consulta){
+          return false
+        }else {
+          switch (all) {
+            case true:
+              this.eliminado = await userEstructura.deleteMany()
+              console.log('Se han eliminado '+this.eliminado.deletedCount+' usuarios')
+              return true
+
+            default:
+              this.eliminado = await userEstructura.deleteOne({usuario: req.params.usuario})
+              console.log(this.eliminado)
+              return true
+          }
+        }
       })
   }
 }

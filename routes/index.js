@@ -39,11 +39,23 @@ router.get('/usuarios', function(req, res) {
     })
 });
 
-/* GET un tipo de equipo */
+/* GET de un equipo por id */
+router.get('/:usuario/:apellido/:password/equipo/:id', function(req, res) {
+  equipo.verid(req, res,)
+    .then(consulta => {
+      res.send(consulta ? 'El equipo es: '+consulta : 'No se ha podido hacer la consulta, si tu usuario esta por consola quiere decir que no hay equipos en la base de datos, de lo contrario rectifica tu información')
+    })
+    .catch(err => {
+      console.log(err)
+      res.end()
+    })
+});
+
+/* GET todos los equipos de un area */
 router.get('/:usuario/:apellido/:password/ver/equipos/:area', function(req, res) {
   equipo.ver(req, res)
     .then(consulta => {
-      res.send(consulta ? 'Lista de equipos del area '+req.params.area+' de la base de datos: '+consulta : 'No se ha podido hacer la consulta, puede que hayas mandado mal tu usuario o no hay equipos en la base de datos que sean del area '+req.params.area)
+      res.send(consulta ? 'Lista de equipos del area '+req.params.area+' de la base de datos: '+consulta : 'No se ha podido hacer la consulta, si tu usuario esta por consola quiere, decir que no hay equipos en la base de datos que sean del area '+req.params.area+' de lo contrario rectifica tu información')
     })
     .catch(err => {
       console.log(err)
@@ -55,7 +67,7 @@ router.get('/:usuario/:apellido/:password/ver/equipos/:area', function(req, res)
 router.get('/:usuario/:apellido/:password/ver/equipos', function(req, res) {
   equipo.ver(req, res, true)
     .then(consulta => {
-      res.send(consulta ? 'Lista de equipos de la base de datos: '+consulta : 'No se ha podido hacer la consulta, puede que hayas mandado mal tu usuario o no hay equipos en la base de datos')
+      res.send(consulta ? 'Lista de equipos de la base de datos: '+consulta : 'No se ha podido hacer la consulta, si tu usuario esta por consola quiere decir que no hay equipos en la base de datos, de lo contrario rectifica tu información')
     })
     .catch(err => {
       console.log(err)
@@ -105,12 +117,73 @@ router.put('/editar/:usuario/:apellido/:password/para/:upUsuario/:upApellido/:up
 router.put('/editar/:usuario/:apellido/:password/equipos/:id/para/:upArea/:upID/:upNombre/:upDescripcion', function(req, res) {
   equipo.editar(req, res)
     .then(cambio => {
-      res.send(cambio ? 'Se ha guardado: '+cambio : 'No se ha podido guardar, puede que hayas mandao mal tu usuario')
+      res.send(cambio ? 'Se ha guardado: '+cambio : 'No se ha podido guardar, si tu usuario esta por consola quiere decir que no has mandado bien los datos del equipo, de lo contrario rectifica tus datos de usuario')
     })
     .catch(err => {
       console.log(err)
       res.end()
     })
 });
+
+/** Rutas DELETE */
+/* DELETE un usuario */
+router.delete('/eliminar/:usuario/:apellido/:password', function(req, res) {
+  usuario.eliminar(req, res)
+    .then(eliminado => {
+      res.send(eliminado ? 'Se ha eliminado: '+req.params.usuario : 'No se ha podido eliminar, puede que hayas mandado mal tu usuario')
+    })
+    .catch(err => {
+      console.log(err)
+      res.end()
+    })
+})
+
+/* DELETE todos los usuarios*/
+router.delete('/eliminar/:usuario/:apellido/:password/all', function(req, res) {
+  usuario.eliminar(req, res, true)
+    .then(eliminado => {
+      res.send(eliminado ? 'Se han eliminado los usuarios' : 'No se han eliminado los usuarios, rectifica tus datos de usuario')
+    })
+    .catch(err => {
+      console.log(err)
+      res.end()
+  })
+})
+
+/* DELETE un por id */
+router.delete('/eliminar/:usuario/:apellido/:password/equipo/:id', function(req, res) {
+  equipo.borrarid(req, res)
+    .then(eliminado => {
+      res.send(eliminado ? 'Se ha eliminado' : 'No se ha podido eliminar, si tu usuario esta por consola quiere decir que no has espesificado bien el id del equipo, de lo contrario rectifica tus datos de usuario')
+    })
+    .catch(err => {
+      console.log(err)
+      res.end()
+    })
+})
+
+/* DELETE todos los equipos de un area*/
+router.delete('/eliminar/:usuario/:apellido/:password/equipos/:area', function(req, res) {
+  equipo.borrar(req, res)
+    .then(eliminado => {
+      res.send(eliminado ? 'Se han eliminado los equipos del area '+req.params.area : 'No se han podido eliminar, si tu usuario esta por consola quiere decir que no has espesificado bien el area del equipo, de lo contrario rectifica tus datos de usuario')
+    })
+    .catch(err => {
+      console.log(err)
+      res.end()
+    })
+})
+
+/* DELETE todos los equipos */
+router.delete('/eliminar/:usuario/:apellido/:password/equipos', function(req, res) {
+  equipo.borrar(req, res, true)
+    .then(eliminado => {
+      res.send(eliminado ? 'Se han eliminado todos los equipos' : 'No se han podido eliminar, rectifica tus datos de usuario')
+    })
+    .catch(err => {
+      console.log(err)
+      res.end()
+    })
+})
 
 module.exports = {router, usuario};
