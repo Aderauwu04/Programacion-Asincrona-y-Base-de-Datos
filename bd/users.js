@@ -2,13 +2,17 @@ require('../app')
 const userEstructura = require('./modelos/userEstructura')
 
 class user{
-  constructor(req, res){}
+  constructor(req, res){
+    this.usuario = req.params.usuario
+    this.apellido = req.params.apellido
+    this.password = req.params.password
+  }
   //crear usuario
   async crear(req, res){
     this.newUser = new userEstructura({
-      usuario: req.params.usuario,
-      apellido: req.params.apellido,
-      password: req.params.password
+      usuario: this.usuario,
+      apellido: this.apellido,
+      password: this.password
     })
     const guardado = await this.newUser.save()
     return guardado
@@ -16,15 +20,17 @@ class user{
   // consultar uno o todos los usuarios
   async consultar(req, res, all){
     switch (all) {
-      case true: this.consulta = await userEstructura.find()
+      case true:
+        this.consulta = await userEstructura.find()
         break;
 
-      default: this.consulta = await userEstructura.find({
-        usuario: req.params.usuario,
-        apellido: req.params.apellido,
-        password: req.params.password
-      })
-      break;
+      default:
+        this.consulta = await userEstructura.find({
+          usuario: req.params.usuario,
+          apellido: req.params.apellido,
+          password: req.params.password
+        })
+        break;
     }
     if(!this.consulta.length){
       this.consulta = false
@@ -36,28 +42,32 @@ class user{
   }
   //actualizar un usuario
   async actualizar(req, res){
-    return this.cambio = this.consultar(req, res)
+    return this.consultar(req, res)
       .then(async consulta => {
         if(!consulta){
           return false
         }else{
-          const updatedUser = await userEstructura.findOneAndUpdate(
-          {
-            usuario: req.params.usuario
-          },
-          {
-            usuario: req.params.upUsuario,
-            apellido: req.params.upApellido,
-            password: req.params.upPassword
-          })
-          const actualizado = await userEstructura.find({
-            usuario: req.params.upUsuario,
-            apellido: req.params.upApellido,
-            password: req.params.upPassword
-          })
-          updatedUser
-          console.log(actualizado)
-          return actualizado
+          if(req.params.usuario == this.usuario){
+            const updatedUser = await userEstructura.findOneAndUpdate(
+            {
+              usuario: this.usuario
+            },
+            {
+              usuario: req.params.upUsuario,
+              apellido: req.params.upApellido,
+              password: req.params.upPassword
+            })
+            const actualizado = await userEstructura.find({usuario: req.params.upUsuario})
+            updatedUser
+            this.usuario = req.params.upUsuario
+            this.apellido = req.params.upApellido
+            this.password = req.params.upPassword
+            console.log(actualizado)
+            return actualizado
+          }else{
+            console.log('Para editar este usuario debes iniciar sesion con el primero')
+            return false
+          }
         }
       })
       .catch(err => {
@@ -79,9 +89,14 @@ class user{
               return true
 
             default:
-              this.eliminado = await userEstructura.deleteOne({usuario: req.params.usuario})
-              console.log(this.eliminado)
-              return true
+              if(req.params.usuario == this.usuario){
+                this.eliminado = await userEstructura.deleteOne({usuario: this.usuario})
+                console.log(this.eliminado)
+                return true
+              }else{
+                console.log('Para eliminar este usuario debes iniciar sesion con el primero')
+                return false
+              }
           }
         }
       })

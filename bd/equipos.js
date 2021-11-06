@@ -8,8 +8,7 @@ class equipo extends user{
   }
   // agregar un equipo
   async agregar(req, res) {
-    return this.guardado =
-    this.consultar(req, res)
+    return this.consultar(req, res)
     .then(async consulta => {
         if(!consulta) {
           return false
@@ -17,13 +16,13 @@ class equipo extends user{
           this.equipo = new almacenEstructura({
             area: req.params.area,
             id: req.params.id,
-            usuario: req.params.usuario,
+            usuario: this.usuario,
             nombre: req.params.nombre,
             descripcion: req.params.descripcion
           })
-          let guardado = await this.equipo.save()
-          console.log(guardado)
-          return guardado
+          this.guardado = await this.equipo.save()
+          console.log(this.guardado)
+          return this.guardado
         }
       })
       .catch(err => {
@@ -40,6 +39,7 @@ class equipo extends user{
         }else {
           this.busqueda = await almacenEstructura.find({id:req.params.id})
           if(!this.busqueda.length){
+            console.log('El equipo no existe')
             return false
           } else {
             console.log(this.busqueda)
@@ -63,6 +63,7 @@ class equipo extends user{
             case true:
               this.busqueda = await almacenEstructura.find()
               if(!this.busqueda.length){
+                console.log('No hay equipos')
                 return false
               } else {
                 console.log(this.busqueda)
@@ -72,6 +73,7 @@ class equipo extends user{
             default:
               this.busqueda = await almacenEstructura.find({area:req.params.area})
               if(!this.busqueda.length){
+                console.log('No hay equipos de esta area '+req.params.area)
                 return false
               } else {
                 console.log(this.busqueda)
@@ -100,14 +102,19 @@ class equipo extends user{
             {
               area: req.params.upArea,
               id: req.params.upID,
-              usuario: req.params.usuario,
+              usuario: this.usuario,
               nombre: req.params.upNombre,
               descripcion: req.params.upDescripcion
             })
-            const actualizado = await almacenEstructura.find({id:req.params.upID})
-            updatedEquipo
-            console.log(actualizado)
-            return actualizado
+            if(updatedEquipo.length){
+              const actualizado = await almacenEstructura.find({id:req.params.upID})
+              updatedEquipo
+              console.log(actualizado)
+              return actualizado
+            }else{
+              console.log('El equipo no existe')
+              return false
+            }
         }
       })
       .catch(err => {
@@ -122,9 +129,18 @@ class equipo extends user{
           return false
         }else {
           this.eliminado = await almacenEstructura.deleteOne({id: req.params.id})
-          console.log(this.eliminado)
-          return true
+          if(this.eliminado.deletedCount !== 0){
+            console.log(this.eliminado)
+            return true
+          }else{
+            console.log('El equipo no existe')
+            return false
+          }
         }
+      })
+      .catch(err => {
+        console.log(err)
+        res.end()
       })
   }
   async borrar(req, res, all){
@@ -136,14 +152,28 @@ class equipo extends user{
           switch (all) {
             case true:
               this.eliminado = await almacenEstructura.deleteMany()
-              console.log('Se han eliminado '+this.eliminado.deletedCount+' equipos')
-              return true
+              if(this.eliminado.deletedCount !== 0){
+                console.log('Se han eliminado '+this.eliminado.deletedCount+' equipos')
+                return true
+              }else{
+                console.log('No hay equipos')
+                return false
+              }
 
             default:
               this.eliminado = await almacenEstructura.deleteMany({area: req.params.area})
-              return true
+              if(this.eliminado.deletedCount !== 0){
+                return true
+              }else{
+                console.log('No hay equipos del area '+req.params.area+' para eliminar')
+                return false
+              }
           }
         }
+      })
+      .catch(err => {
+        console.log(err)
+        res.end()
       })
   }
 }
