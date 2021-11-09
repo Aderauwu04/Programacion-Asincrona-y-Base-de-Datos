@@ -9,22 +9,5 @@
 <body>
     <h1>Servidor de un almacen</h1>
         <h2>Bienvenido! {{usuario.user}} {{usuario.ape}}</h2>
-    <h4>Lista de rutas</h4>
-    <ul>
-        <h5>get</h5>
-        <li>'/' Para la pagina principal</li>
-        <li>'/ciudad/:id' Muestra la estructura con el id que conincida</li>
-        <li>'/ciudad' Muestra todo el contenido de la ciudad</li>
-        <h5>post</h5>
-        <li>'/query/item/:id' Guarda información por query para una estructura con el id que coincida en ciudad con el id requerido</li>
-        <li>'/body/item/:id' Guarda información via body en el id que coincida con el id que coincida en ciudad con el id requerido</li>
-        <li>'/ciudad/:id' Crea una nueva edificación en la ciudad</li>
-        <h5>delete</h5>
-        <li>'/delete/ítem/:id/:itemid' Elimina la estructura que coincida con el id de una edificación en ciudad y con el id de la estructura requerido</li>
-        <li>'/delete/ciudad/:id' Elimina todas las edificaciones que coincidan con el id requerido</li>
-        <h5>put</h5>
-        <li>'/ciudad/:id/:cambio' Cambia el id de la estructura que coincida con el id de una edificación en ciudad y con el id de la estructura requerido</li>
-        <li>'/estructura/:id/:itemid/:cambio' Cambia el id de un tipo de edificación en ciudad</li>
-    </ul>
 </body>
 </html>
